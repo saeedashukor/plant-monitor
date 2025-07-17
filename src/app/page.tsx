@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { db } from "../server/db"; // adjust path as needed
 import type { MoistureLog } from "@prisma/client/wasm";
 
