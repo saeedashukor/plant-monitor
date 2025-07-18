@@ -20,7 +20,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(400).json({ error: "Invalid request body" });
     }
 
-    const { token, plant } = req.body;
+    const { token, plant } = parsed.data;
 
     if (!token || !Expo.isExpoPushToken(token)) {
         return res.status(400).json({ error: "Invalid Expo push token"});
@@ -37,7 +37,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     ];
 
     try { 
-        const result = await expo.sendPushNotificationsAsync(messages) as ExpoPushTicket[];
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        const result: ExpoPushTicket[] = await expo.sendPushNotificationsAsync(messages);
         return res.status(200).json({ success: true, result });
 
     } catch(error) {
