@@ -1,9 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { db } from "~/server/db";
 import { z } from "zod";
+import { mapMoistureReading } from "~/utils/moistureReading";
+
 
 const MoistureSchema = z.object({
-  moisture: z.number(),
+  name: z.string().min(1),
+  moisture: z.number().min(0).max(4095),
 });
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse){
@@ -17,9 +20,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(400).json({error: "Invalid body"});
     }
 
-    const { moisture } = parse.data;
+    const { name, moisture } = parse.data;
+    const level = mapMoistureReading(moisture);
+
     await db.moistureLog.create({
-        data: { moisture },
+        data: {
+            name,
+            moisture,
+            level,
+        },
     });
 
     return res.status(200).json({status: "ok"});
