@@ -1,10 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { Expo } from "expo-server-sdk";
+import { Expo, type ExpoPushTicket } from "expo-server-sdk";
 
 const expo = new Expo();
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    if (req.method ! == "POST") {
+    if (req.method !== "POST") {
         return res.status(405).json({ error: "Method not allowed" });
     }
 
@@ -25,7 +25,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     ];
 
     try { 
-        const result = await expo.sendPushNotificationsAsync(messages);
+        const result: ExpoPushTicket[] = await expo.sendPushNotificationsAsync(messages);
         return res.status(200).json({ success: true, result });
 
     } catch(error) {
